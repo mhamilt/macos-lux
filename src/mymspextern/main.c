@@ -1,9 +1,5 @@
 /*
- A template for a basic max external object with more explicit documentation
- 
- See Readme of repository for build instructions.
- Create an Issue on the repository if anything is amiss or you have any suggestion
- - mhamilt Mar 2020
+  Get the lux value from facetim camera on macbook pros / airs
  */
 #include "ext.h"
 #include "ext_obex.h"
@@ -173,7 +169,7 @@ int C74_EXPORT main(void)
                            (method)myExternalConstructor,
                            (method)myExternDestructor,
                            (short)sizeof(MaxExternalObject),
-                           0L,                        
+                           0L,
                            0);
     
     coupleMethodsToExternal(c);
