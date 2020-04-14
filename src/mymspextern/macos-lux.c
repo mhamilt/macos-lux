@@ -27,8 +27,7 @@ void updateTimerCallBack(CFRunLoopTimerRef timer, void *info)
     {
         if (values[0] != prevReading)
         {
-            recordMaximum = (values[0] > recordMaximum) ? values[0]: recordMaximum;
-            
+            recordMaximum = (values[0] > recordMaximum) ? values[0]: recordMaximum;           
             onLuxUpdate(maxExtRef,values[0]);
         }
         prevReading = values[0];

@@ -21,13 +21,8 @@ void* myExternClass;
 /// Arguement list should be as long as the list of type arguments passed in the class_new call below.
 /// @param arg1 first argument to object: should match type given in class_new(...)
 /// @returns a void* to an instance of the MaxExternalObject
-void* myExternalConstructor(long arg1)
+void* myExternalConstructor()
 {
-    //--------------------------------------------------------------------------
-    if (!arg1)
-    {
-        post("no arguement\n");
-    }
     //--------------------------------------------------------------------------
     MaxExternalObject* maxObjectPtr = (MaxExternalObject*)object_alloc(myExternClass);
     //--------------------------------------------------------------------------
@@ -54,7 +49,6 @@ void myExternDestructor(MaxExternalObject* maxObjectPtr)
     {
         post("Error joining thread\n");
     }
-    post("END");
 }
 //------------------------------------------------------------------------------
 
@@ -119,7 +113,7 @@ void onBang(MaxExternalObject* maxObjectPtr)
 /// @param floatIn 
 void onFloat(MaxExternalObject* maxObjectPtr, double floatIn)
 {
-    maxObjectPtr->gain = floatIn;
+    post("I got a float!\n");
 }
 //------------------------------------------------------------------------------
 
@@ -175,18 +169,14 @@ void coupleMethodsToExternal( t_class* c)
 //------------------------------------------------------------------------------
 int C74_EXPORT main(void)
 {
-    post("hello");
     t_class* c = class_new("macos-lux",
                            (method)myExternalConstructor,
                            (method)myExternDestructor,
                            (short)sizeof(MaxExternalObject),
-                           0L,
-                           A_DEFLONG,
+                           0L,                        
                            0);
     
     coupleMethodsToExternal(c);
-    
-//    class_dspinit(c);
     class_register(CLASS_BOX, c);
     
     myExternClass = c;
