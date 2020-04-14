@@ -10,9 +10,9 @@ uint64_t prevReading = 0;
 uint64_t recordMaximum = 0;
 MaxExternalObject* maxExtRef;
 //------------------------------------------------------------------------------
-void onLuxUpdate(MaxExternalObject* maxObjectPtr, float lux)
+void onLuxUpdate(MaxExternalObject* maxObjectPtr, uint64_t lux)
 {
-    outlet_float(maxObjectPtr->float_out, lux);
+    outlet_int(maxObjectPtr->int_out, lux);
 }
 //------------------------------------------------------------------------------
 void updateTimerCallBack(CFRunLoopTimerRef timer, void *info)
@@ -28,8 +28,8 @@ void updateTimerCallBack(CFRunLoopTimerRef timer, void *info)
         if (values[0] != prevReading)
         {
             recordMaximum = (values[0] > recordMaximum) ? values[0]: recordMaximum;
-            post("%llu %.6f\n", values[0], (float)(values[0])/ (float)(recordMaximum));
-            onLuxUpdate(maxExtRef,(float)(values[0])/ (float)(recordMaximum));
+            
+            onLuxUpdate(maxExtRef,values[0]);
         }
         prevReading = values[0];
         return;
@@ -79,24 +79,3 @@ void* lux_main(void* arg)
     
     return NULL;
 }
-//------------------------------------------------------------------------------
-//int main(void)
-//{
-//    pthread_t print_lux_thread;
-//    if(pthread_create(&print_lux_thread, NULL, lux_main, NULL))
-//    {
-//        fprintf(stderr, "Error creating thread\n");
-//        return EXIT_FAILURE;
-//    }
-//    int y = 0;
-//    while(++y < 100000);
-//    printf("nothing broken so far\n");
-//    if(pthread_join(print_lux_thread, NULL))
-//    {
-//        fprintf(stderr, "Error joining thread\n");
-//        return 2;
-//    }
-//    printf("nothing broken so far\n");
-//    return EXIT_SUCCESS;
-//}
-//------------------------------------------------------------------------------

@@ -20,11 +20,10 @@ typedef struct _MaxExternalObject
     CFRunLoopRef lux_thread_runloop;
     short inletConnection;
     double gain;
-    void* float_out;
+    void* int_out;
 } MaxExternalObject;
 
 void* lux_main(void* arg);
-void onLuxUpdate(MaxExternalObject* maxObjectPtr, float lux);
-
+void onLuxUpdate(MaxExternalObject* maxObjectPtr, uint64_t lux);
 
 #endif

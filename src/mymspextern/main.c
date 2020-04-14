@@ -11,15 +11,11 @@
 #include "buffer.h"
 #include "macos-lux.h"
 //------------------------------------------------------------------------------
-
 /// void* to the complete new Max External class so that it can be used in the class methods
 /// This will be set to t_class* in the main function
 /// @code t_class* c = class_new(...);
 /// myExternClass = c;
 void* myExternClass;
-
-//------------------------------------------------------------------------------
-
 //------------------------------------------------------------------------------
 /// External Object Constructor: use this to setup any variables / properties of your DSP Struct or MaxExternalObject
 /// Arguement list should be as long as the list of type arguments passed in the class_new call below.
@@ -34,9 +30,8 @@ void* myExternalConstructor(long arg1)
     }
     //--------------------------------------------------------------------------
     MaxExternalObject* maxObjectPtr = (MaxExternalObject*)object_alloc(myExternClass);
-//    dsp_setup((t_pxobject*)maxObjectPtr, 1);
     //--------------------------------------------------------------------------
-    maxObjectPtr->float_out = outlet_new((t_object*)maxObjectPtr, "float");
+    maxObjectPtr->int_out = outlet_new((t_object*)maxObjectPtr, "int");
     if(pthread_create(&maxObjectPtr->print_lux_thread,
                       NULL,
                       lux_main,
@@ -111,68 +106,6 @@ void inletAssistant(MaxExternalObject* maxObjectPtr,
 }
 
 //------------------------------------------------------------------------------
-#pragma mark DSP Loop
-/// Main DSP process block, do your DSP here
-/// @param maxObjectPtr
-/// @param dsp64
-/// @param ins double pointer array to sample inlets
-/// @param numins
-/// @param outs double pointer array to sample outlets
-/// @param numouts
-/// @param sampleframes samples per channel
-/// @param flags
-/// @param userparam no idea
-void mspExternalProcessBlock(MaxExternalObject* maxObjectPtr, t_object* dsp64,
-                             double** ins, long numins, double** outs, long numouts,
-                             long sampleframes, long flags, void* userparam)
-
-{
-    //--------------------------------------------------------------------------
-    // pass through
-    double* in = ins[0];
-    
-    if(!maxObjectPtr->inletConnection)
-    {
-        for (int s = 0; s < sampleframes; ++s)
-        {
-            in[s] = 0.0;
-        }
-    }
-    
-    //--------------------------------------------------------------------------
-    // DSP loops
-    
-    for (int s = 0; s < sampleframes; ++s)
-    {
-        outs[0][s] = tanh(in[s] * maxObjectPtr->gain);
-    }
-    for (int i = 1; i < numouts; ++i)
-    {
-        outs[i] = outs[0];
-    }
-}
-//------------------------------------------------------------------------------
-
-/// Audio DSP setup
-/// @param maxObjectPtr object pointer
-/// @param dsp64
-/// @param count array containing number of connections to an inlet with index [i]
-/// @param samplerate
-/// @param vectorsize
-/// @param flags
-void prepareToPlay(MaxExternalObject* maxObjectPtr, t_object* dsp64, short* count,
-                   double samplerate, long vectorsize, long flags)
-{
-    maxObjectPtr->inletConnection = count[0];
-    
-    object_method(dsp64,
-                  gensym("dsp_add64"),
-                  maxObjectPtr,
-                  mspExternalProcessBlock,
-                  0,
-                  NULL);
-}
-//------------------------------------------------------------------------------
 
 /// This gets called when we receive a bang
 /// @param maxObjectPtr object pointer
@@ -238,7 +171,6 @@ void coupleMethodsToExternal( t_class* c)
     class_addmethod(c, (method)inletAssistant,"assist", A_CANT,0);
     class_addmethod(c, (method)onPrintMessage, "print", 0);
     class_addmethod(c, (method)onAnyMessage, "anything", A_GIMME, 0);
-//    class_addmethod(c, (method)prepareToPlay, "dsp64", A_CANT, 0);
 }
 //------------------------------------------------------------------------------
 int C74_EXPORT main(void)
@@ -254,7 +186,7 @@ int C74_EXPORT main(void)
     
     coupleMethodsToExternal(c);
     
-    class_dspinit(c);
+//    class_dspinit(c);
     class_register(CLASS_BOX, c);
     
     myExternClass = c;
