@@ -9,3 +9,5 @@ application.windows64
 application.macosx
 out
 *.xcuserstate
+macos-lux.xcodeproj/project.xcworkspace/xcuserdata/mhamilt7.xcuserdatad/UserInterfaceState.xcuserstate
+*.xcuserstate
