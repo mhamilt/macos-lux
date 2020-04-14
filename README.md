@@ -6,6 +6,10 @@ MaxMSP object for retrieving the lux value from the FaceTime camera
 
 Allegedly there are problems with TouchBar MacBook Pros. This should work with any MacBook with a FaceTime camera
 
+| Model          | OS      | Max Version | Mode   |
+| -------------- | ------- | ----------- | ------ |
+| MacBookPro14,1 | 10.14.6 | 8.1.3       | 64-bit |
+
 ## TODO
 
 - [ ] Add methods for tracking record lux value
